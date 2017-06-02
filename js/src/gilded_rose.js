@@ -9,7 +9,7 @@ function Item(name, sell_in, quality) {
 // Assumptions:
   // 1. Decrement sell_in before calculating quality, bc update_quality is meant to be run at the start of a new business day to determine prices for that day.
   // 2. To "increase in quality" means to increment by one. We know this from the description of how Backstage Passes increase more quickly, starting at increasing by two. Therefore the default must be less than two.
-  // 3. However, "degrade in quality" is never specified, so I set it as one below. This is a magic number: https://en.wikipedia.org/wiki/Magic_number_(programming)
+  // 3. I am setting degradeBy to 1 here so it can be changed conveniently. This is a magic number: https://en.wikipedia.org/wiki/Magic_number_(programming)
 const degradeBy = 1;
 let items = [];
 
@@ -17,13 +17,13 @@ let items = [];
   // General approach: handle exceptional cases first, end with general case
 function update_quality() {
   for (let i = 0; i < items.length; i++) {
+    // everything decrements a sell_in quality
+    items[i].sell_in--;
+
     // start with exceptional case of Sulfuras, which is unique in quality and aging
     if (items[i].name === 'Sulfuras, Hand of Ragnaros') {
-      // NOTE: sell_in does not change for Sulfuras
       items[i].quality = 80; // enforce that quality is always 80
     } else {
-      // everything else decrements a sell_in quality
-      items[i].sell_in--;
       // Aged Brie and Backstage Passes do not decrement in quality like other items do
       if (items[i].name === 'Aged Brie') {
         items[i].quality++;
